@@ -3,15 +3,16 @@
 using namespace std;
 
 int main() {
-    long long a ,b ,c;
-    cin >> a;
-    cin >> b;
-    cin >> c;
+    long long number[3];
 
-    cout << a + b - c<< "\n";
-    if (b < 10) cout << a*10 + b - c;
-    else if (b < 100) cout << a * 100 + b - c;
-    else if (b < 1000) cout << a * 1000 + b - c;
-    else cout << a * 10000 + b - c;
+    for(int i = 0 ; i < 3; i++) {
+        cin >> number[i];
+    }
+
+    cout << number[0] + number[1] - number[2] << "\n";
+    if (number[1] < 10) cout << number[0]*10 + number[1] - number[2];
+    else if (number[1] < 100) cout << number[0]*100 + number[1] - number[2];
+    else if (number[1] < 1000) cout << number[0]*1000 + number[1] - number[2];
+    else cout << number[0]*10000 + number[1] - number[2];
     return 0;
 }
