@@ -2,6 +2,7 @@
   "files.associations": {
     ".fantomasignore": "ignore",
     "iostream": "cpp",
-    "ios": "cpp"
+    "ios": "cpp",
+    "__assert": "cpp"
   }
 }
