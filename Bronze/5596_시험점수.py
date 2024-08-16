@@ -1,0 +1,1 @@
+print(max(sum(list(map(int, input().rstrip("\n").split()))), sum(list(map(int, input().split()))) ))
