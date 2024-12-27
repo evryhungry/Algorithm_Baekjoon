@@ -4,5 +4,8 @@
     "iostream": "cpp",
     "ios": "cpp",
     "__assert": "cpp"
+  },
+  "files.watcherExclude": {
+    "**/target": true
   }
 }
