@@ -9,4 +9,5 @@ cmake-build-debug-event-trace
 .vscode
 
 # src
-src
+src/practice/java/main/*.class
+src/practice/java/main/*.java
