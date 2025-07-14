@@ -13,6 +13,7 @@ public class Main {
         }
         return false;
     }
+    static boolean hasVowel = false;
     static char prevChar = 0;
     static int vowelCount = 0;
     static int consonantCount = 0;
@@ -35,6 +36,7 @@ public class Main {
                     }
                 }
                 if (isVowel(c)) {
+                    hasVowel = true;
                     consonantCount = 0;
                     vowelCount++;
                 } else {
@@ -48,7 +50,7 @@ public class Main {
                 prevChar = c;
             }
 
-            if (isValid) {
+            if (isValid && hasVowel) {
                 sb.append("<" + line + "> is acceptable.\n");
             } else {
                 sb.append("<" + line + "> is not acceptable.\n");
