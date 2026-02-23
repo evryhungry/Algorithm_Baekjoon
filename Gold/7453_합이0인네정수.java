@@ -12,6 +12,53 @@ import java.util.StringTokenizer;
  * hashMap의 메모리 용량 제한으로 시간초과. O(N^2)
  * HashMap의 상수가 너무 큼 + Long 오토박싱/GC/캐시 미스로 느려짐.
  */
+
+/**
+ * 왜 이(HashMap 기반) 풀이가 BOJ 7453에서 시간초과가 나는가?
+ *
+ * <p><b>겉으로는 O(N^2)</b>로 보이지만, Java에서 {@link HashMap} + {@link Long} 키를
+ * 1,600만(=4000^2) 수준으로 다루면 상수 비용이 너무 커져 시간 제한을 초과하기 쉽다.</p>
+ *
+ * 1) Long 오토박싱(객체 생성) 비용
+ * <ul>
+ *   <li>맵 타입이 {@code Map<Long, Integer>} 이므로, {@code long} 합을 넣을 때마다
+ *       {@code Long.valueOf(sum)} 형태의 <b>박싱</b>이 발생한다.</li>
+ *   <li>N=4000이면 AB 합을 만드는 루프만 {@code N^2 = 16,000,000}번 실행되며,
+ *       이 과정에서 매우 많은 Long 객체/참조가 관여한다.</li>
+ *   <li>결과적으로 <b>메모리 사용량 증가 + GC(가비지 컬렉션) 부담</b>이 커진다.</li>
+ * </ul>
+ *
+ * 2) HashMap 접근의 높은 상수 시간 (해시 계산 + 버킷 탐색)
+ * <ul>
+ *   <li>각 put/get에는 해시 계산, 버킷 위치 탐색, 충돌 처리(체이닝/트리화) 등의 비용이 따른다.</li>
+ *   <li>배열처럼 연속 메모리를 순회하는 작업이 아니라, 랜덤 접근이 많아
+ *       <b>CPU 캐시 효율이 낮아</b> 실제 실행 시간이 크게 증가한다.</li>
+ * </ul>
+ *
+ * 3) 리사이즈(rehash) 비용
+ * <ul>
+ *   <li>AB 합의 “서로 다른 값” 개수가 많아지면 맵 엔트리 수도 커지고,
+ *       로드 팩터를 넘으면 내부 배열이 커지며 <b>리사이즈 + 재해싱</b>이 발생한다.</li>
+ *   <li>리사이즈는 단발성 비용이 아니라 누적되며, 큰 입력에서 체감 시간이 크게 늘어난다.</li>
+ * </ul>
+ *
+ * 4) containsKey + get 이중 조회로 동일 탐색 2번
+ * <ul>
+ *   <li>두 번째 루프에서 {@code containsKey(temp)} 후 {@code get(temp)}를 호출하므로,
+ *       같은 키에 대해 해시 계산/탐색을 <b>2번</b> 수행한다.</li>
+ *   <li>총 조회 횟수도 {@code N^2 = 16,000,000}번이므로, 이중 탐색은 시간을 더 악화시킨다.</li>
+ *   <li>대안: {@code Integer cnt = map.get(temp); if (cnt != null) ans += cnt;} (탐색 1회)</li>
+ * </ul>
+ *
+ * 정리
+ * <ul>
+ *   <li>이 풀이는 이론상 {@code O(N^2)}지만, Java에서 HashMap + Long을 대량으로 다루는 상수 비용이
+ *       너무 커서 실제로는 시간 제한을 넘기기 쉽다.</li>
+ *   <li>따라서 BOJ 7453에서는 보통
+ *       <b>AB, CD를 int[] 배열에 저장 → 정렬 → 투 포인터/이분탐색</b> 방식이
+ *       더 빠르고 안정적으로 통과한다.</li>
+ * </ul>
+ */
 public class Main {
     static int N;
     static Map<Long, Integer> map_left = new HashMap<>();
